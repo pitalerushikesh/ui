@@ -39,17 +39,14 @@ function getLabelhash(label) {
 }
 
 const contracts = {
-  1: {
-    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  50: {
+    registry: ''
   },
-  3: {
-    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  51: {
+    registry: ''
   },
-  4: {
-    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
-  },
-  5: {
-    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  1337: {
+    registry: ''
   }
 }
 
@@ -504,7 +501,7 @@ export class ENS {
 
   async createSubdomain(name) {
     const account = await getAccount()
-    const publicResolverAddress = await this.getAddress('resolver.eth')
+    const publicResolverAddress = await this.getAddress('resolver.xdc')
     try {
       return this.setSubnodeRecord(name, account, publicResolverAddress)
     } catch (e) {
