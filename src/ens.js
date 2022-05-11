@@ -39,6 +39,18 @@ function getLabelhash(label) {
 }
 
 const contracts = {
+  1: {
+    registry: ''
+  },
+  3: {
+    registry: ''
+  },
+  4: {
+    registry: ''
+  },
+  5: {
+    registry: ''
+  },
   50: {
     registry: ''
   },

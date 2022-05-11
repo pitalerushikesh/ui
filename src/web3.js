@@ -163,6 +163,8 @@ export function getNetworkProviderUrl(id) {
       return `https://rpc.xinfin.yodaplus.net`
     case '51':
       return `https://rpc-apothem.xinfin.yodaplus.net`
+    case '1337':
+      return `http://127.0.0.1:8545`
     default:
       return `https://mainnet.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
   }
