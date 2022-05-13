@@ -2,10 +2,9 @@
   "name": "@xnsdomains/ui",
   "version": "3.3.32",
   "description": "UI components and reusable code",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "src/index.js",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "test": "node_modules/.bin/jest --verbose",
