@@ -151,6 +151,7 @@ export default class Registrar {
         highestBid: parseInt(entry[4])
       }
     } catch (e) {
+      console.log("Legacy entry error", e)
       legacyEntry = {
         deedOwner: '0x0',
         state: 0,
@@ -697,11 +698,13 @@ export async function setupRegistrar(registryAddress) {
   const Resolver = await getEthResolver(ENS)
 
   let ethAddress = await ENS.owner(namehash('xdc'))
+  // let ethAddress = "0x327a301820fb00fe6C606Ec4CBE606354a40967A";
 
-  let controllerAddress = await Resolver.interfaceImplementer(
-    namehash('xdc'),
-    permanentRegistrarInterfaceId
-  )
+  // let controllerAddress = await Resolver.interfaceImplementer(
+  //   namehash('xdc'),
+  //   permanentRegistrarInterfaceId
+  // )
+  let controllerAddress = "0xcdC6F27eF9481E5584f0BC41DC173203bC849e26";
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
     legacyRegistrarInterfaceId
