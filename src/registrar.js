@@ -697,14 +697,14 @@ export async function setupRegistrar(registryAddress) {
   const ENS = getENSContract({ address: registryAddress, provider })
   const Resolver = await getEthResolver(ENS)
 
-  let ethAddress = await ENS.owner(namehash('xdc'))
-  // let ethAddress = "0x327a301820fb00fe6C606Ec4CBE606354a40967A";
+  // let ethAddress = await ENS.owner(namehash('xdc'))
+  let ethAddress = "0x354267E84F96b4d743Dbe36A14024FFe6D876f34";
 
   // let controllerAddress = await Resolver.interfaceImplementer(
   //   namehash('xdc'),
   //   permanentRegistrarInterfaceId
   // )
-  let controllerAddress = "0xcdC6F27eF9481E5584f0BC41DC173203bC849e26";
+  let controllerAddress = "0x183eDD894e6C9809ddDfd9f1Bf0b98F396073dE6";
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
     legacyRegistrarInterfaceId
