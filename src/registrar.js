@@ -321,6 +321,16 @@ export default class Registrar {
     return price
   }
 
+  async getRentPriceAndPremium(name, duration, block="latest") {
+    const permanentRegistrarController = this.permanentRegistrarController
+    let price = await permanentRegistrarController.rentPrice(name, duration, {blockTag:block} )
+    let premium = await permanentRegistrarController.rentPrice(name, 0, {blockTag:block} )
+    console.log("Rent Price with Premium",price)
+    return {
+      price, premium
+    }
+  }
+
   async getEthPrice() {
     const oracleens = 'eth-usd.data.eth'
     try{
