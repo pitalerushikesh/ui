@@ -107,11 +107,16 @@ export default class Registrar {
   }
 
   async getAddress(name) {
-    const provider = await getProvider()
-    const hash = namehash(name)
-    const resolverAddr = await this.ENS.resolver(hash)
-    const Resolver = getResolverContract({ address: resolverAddr, provider })
-    return Resolver['addr(bytes32)'](hash)
+    const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+    try {
+      const provider = await getProvider()
+      const hash = namehash(name)
+      const resolverAddr = await this.ENS.resolver(hash)
+      const Resolver = getResolverContract({ address: resolverAddr, provider })
+      return Resolver['addr(bytes32)'](hash)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async getText(name, key) {
@@ -334,7 +339,8 @@ export default class Registrar {
   async getEthPrice() {
     const oracleens = 'eth-usd.data.eth'
     try{
-      const contractAddress = await this.getAddress(oracleens)
+      // const contractAddress = await this.getAddress(oracleens)
+      const contractAddress = '0x30aE79439ad599A142Ff16972626b2E1875Ad15d'
       const oracle = await this.getOracle(contractAddress)
       return (await oracle.latestAnswer()).toNumber() / 100000000
     }catch(e){
@@ -377,7 +383,7 @@ export default class Registrar {
     const permanentRegistrarController =
       permanentRegistrarControllerWithoutSigner.connect(signer)
     const account = await getAccount()
-    const resolverAddr = await this.getAddress('resolver.xdc')
+    const resolverAddr = await this.getAddress('xdc')
     if (parseInt(resolverAddr, 16) === 0) {
       return permanentRegistrarController.makeCommitment(name, owner, secret)
     } else {
@@ -423,7 +429,7 @@ export default class Registrar {
     const account = await getAccount()
     const price = await this.getRentPrice(label, duration)
     const priceWithBuffer = getBufferedPrice(price)
-    const resolverAddr = await this.getAddress('resolver.xdc')
+    const resolverAddr = await this.getAddress('xdc')
     if (parseInt(resolverAddr, 16) === 0) {
       const gasLimit = await this.estimateGasLimit(() => {
         return permanentRegistrarController.estimateGas.register(
@@ -653,7 +659,7 @@ export default class Registrar {
     } else {
       // Only available for the new DNSRegistrar
       if (!isOld && owner === user) {
-        const resolverAddress = await this.getAddress('resolver.xdc')
+        const resolverAddress = await this.getAddress('xdc')
         return registrar.proveAndClaimWithResolver(
           claim.encodedName,
           data,
@@ -707,14 +713,16 @@ export async function setupRegistrar(registryAddress) {
   const ENS = getENSContract({ address: registryAddress, provider })
   const Resolver = await getEthResolver(ENS)
 
-  // let ethAddress = await ENS.owner(namehash('xdc'))
-  let ethAddress = "0x354267E84F96b4d743Dbe36A14024FFe6D876f34";
+  let ethAddress = await ENS.owner(namehash('xdc'))
+  console.log("ETH addrsss", ethAddress)
+  // let ethAddress = "0x354267E84F96b4d743Dbe36A14024FFe6D876f34";
 
   // let controllerAddress = await Resolver.interfaceImplementer(
   //   namehash('xdc'),
   //   permanentRegistrarInterfaceId
   // )
-  let controllerAddress = "0x183eDD894e6C9809ddDfd9f1Bf0b98F396073dE6";
+  let controllerAddress = "0xaC6234d93968c11B8983594083347f5C1e72f60a";
+  console.log("Controller address", controllerAddress)
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
     legacyRegistrarInterfaceId
