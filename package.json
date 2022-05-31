@@ -2,7 +2,7 @@
   "name": "@xnsdomains/ui",
   "version": "3.3.34",
   "description": "UI components and reusable code",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "files": [
     "src"
   ],
