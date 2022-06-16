@@ -107,7 +107,7 @@ export default class Registrar {
   }
 
   async getAddress(name) {
-    const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+    const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
     try {
       const provider = await getProvider()
       const hash = namehash(name)
@@ -156,7 +156,7 @@ export default class Registrar {
         highestBid: parseInt(entry[4])
       }
     } catch (e) {
-      console.log("Legacy entry error", e)
+      console.log('Legacy entry error', e)
       legacyEntry = {
         deedOwner: '0x0',
         state: 0,
@@ -326,25 +326,33 @@ export default class Registrar {
     return price
   }
 
-  async getRentPriceAndPremium(name, duration, block="latest") {
+  async getRentPriceAndPremium(name, duration, block = 'latest') {
     const permanentRegistrarController = this.permanentRegistrarController
-    let price = await permanentRegistrarController.rentPrice(name, duration, {blockTag:block} )
-    let premium = await permanentRegistrarController.rentPrice(name, 0, {blockTag:block} )
-    console.log("Rent Price with Premium",price)
+    let price = await permanentRegistrarController.rentPrice(name, duration, {
+      blockTag: block
+    })
+    let premium = await permanentRegistrarController.rentPrice(name, 0, {
+      blockTag: block
+    })
+    console.log('Rent Price with Premium', price)
     return {
-      price, premium
+      price,
+      premium
     }
   }
 
   async getEthPrice() {
     const oracleens = 'eth-usd.data.eth'
-    try{
+    try {
       // const contractAddress = await this.getAddress(oracleens)
       const contractAddress = '0x30aE79439ad599A142Ff16972626b2E1875Ad15d'
       const oracle = await this.getOracle(contractAddress)
       return (await oracle.latestAnswer()).toNumber() / 100000000
-    }catch(e){
-      console.warn(`Either ${oracleens} does not exist or Oracle is not throwing an error`, e)
+    } catch (e) {
+      console.warn(
+        `Either ${oracleens} does not exist or Oracle is not throwing an error`,
+        e
+      )
     }
   }
 
@@ -714,15 +722,15 @@ export async function setupRegistrar(registryAddress) {
   const Resolver = await getEthResolver(ENS)
 
   let ethAddress = await ENS.owner(namehash('xdc'))
-  console.log("ETH addrsss", ethAddress)
+  console.log('ETH addrsss', ethAddress)
   // let ethAddress = "0x354267E84F96b4d743Dbe36A14024FFe6D876f34";
 
   // let controllerAddress = await Resolver.interfaceImplementer(
   //   namehash('xdc'),
   //   permanentRegistrarInterfaceId
   // )
-  let controllerAddress = "0xaC6234d93968c11B8983594083347f5C1e72f60a";
-  console.log("Controller address", controllerAddress)
+  let controllerAddress = '0x40082685Fc430E901E12121717fe45dA75180973'
+  console.log('Controller address', controllerAddress)
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
     legacyRegistrarInterfaceId
