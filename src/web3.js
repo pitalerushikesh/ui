@@ -233,44 +233,51 @@ export async function getAccounts() {
 export async function getNetworkId() {
   const provider = await getWeb3()
   const network = await provider.getNetwork()
-  console.log(
-    '🚀 ~ file: web3.js ~ line 236 ~ getNetworkId ~ network',
-    network.chainId
-  )
-
   return network.chainId
 }
 
-export async function getNetworkName() {
-  const networkID = await getNetworkId()
-  const networkName = ''
-  console.log(
-    '🚀 ~ file: web3.js ~ line 247 ~ getNetworkName ~ networkName',
-    networkName
-  )
-  console.log(
-    '🚀 ~ file: web3.js ~ line 246 ~ getNetworkName ~ networkID',
-    networkID
-  )
+export function getHelloWorld() {
+  console.log('Hello World')
+  return 'Hello World'
+}
 
-  switch (networkID) {
-    case 50:
-      console.log('50 network', networkID)
-      networkName = `XDC Mainnet`
-      break
-    case 51:
-      console.log('51 network', networkID)
-      networkName = `XDC Apothem Testnet`
-      break
-    default:
-      console.log('unknown network', networkID)
-      networkName = `Unknown123 Network`
+export async function getNetworkName() {
+  try {
+    const networkID = await getNetworkId()
+    const networkName = ''
+    console.log(
+      '🚀 ~ file: web3.js ~ line 247 ~ getNetworkName ~ networkName',
+      networkName
+    )
+    console.log(
+      '🚀 ~ file: web3.js ~ line 246 ~ getNetworkName ~ networkID',
+      networkID
+    )
+
+    switch (networkID) {
+      case 50:
+        console.log('50 network', networkID)
+        networkName = `XDC Mainnet`
+        break
+      case 51:
+        console.log('51 network', networkID)
+        networkName = `XDC Apothem Testnet`
+        break
+      default:
+        console.log('unknown network', networkID)
+        networkName = `Unknown123 Network`
+    }
+    console.log(
+      '🚀 ~ file: web3.js ~ line 267 ~ getNetworkName ~ networkName',
+      networkName
+    )
+    return networkName
+  } catch (error) {
+    console.error(
+      '🚀 ~ file: web3.js ~ line 275 ~ getNetworkName ~ error',
+      error
+    )
   }
-  console.log(
-    '🚀 ~ file: web3.js ~ line 267 ~ getNetworkName ~ networkName',
-    networkName
-  )
-  return networkName
 }
 
 export async function getNetwork() {
