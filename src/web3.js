@@ -243,6 +243,10 @@ export async function getNetworkId() {
 
 export async function getNetworkName() {
   const networkID = await getNetworkId()
+  console.log(
+    '🚀 ~ file: web3.js ~ line 246 ~ getNetworkName ~ networkID',
+    networkID
+  )
   switch (networkID) {
     case 50:
       return `XDC Mainnet`
