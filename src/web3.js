@@ -244,9 +244,9 @@ export async function getNetworkId() {
 export async function getNetworkName() {
   const networkID = await getNetworkId()
   switch (networkID) {
-    case 'network 50':
+    case 50:
       return `XDC Mainnet`
-    case 'network 51':
+    case 51:
       return `XDC Apothem Testnet`
     default:
       return `Unknown Network`
