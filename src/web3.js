@@ -244,7 +244,7 @@ export function getHelloWorld() {
 export async function getNetworkName() {
   try {
     const networkID = await getNetworkId()
-    const networkName = ''
+    var networkName = ''
     console.log(
       '🚀 ~ file: web3.js ~ line 247 ~ getNetworkName ~ networkName',
       networkName
