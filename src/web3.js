@@ -233,7 +233,24 @@ export async function getAccounts() {
 export async function getNetworkId() {
   const provider = await getWeb3()
   const network = await provider.getNetwork()
+  console.log(
+    '🚀 ~ file: web3.js ~ line 236 ~ getNetworkId ~ network',
+    network.chainId
+  )
+
   return network.chainId
+}
+
+export async function getNetworkName() {
+  const networkID = await getNetworkId()
+  switch (networkID) {
+    case '50':
+      return `XDC Mainnet`
+    case '51':
+      return `XDC Apothem Testnet`
+    default:
+      return `Unknown Network`
+  }
 }
 
 export async function getNetwork() {
