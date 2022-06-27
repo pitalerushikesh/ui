@@ -249,10 +249,13 @@ export async function getNetworkName() {
   )
   switch (networkID) {
     case 50:
+      console.log('50 network', networkID)
       return `XDC Mainnet`
     case 51:
+      console.log('51 network', networkID)
       return `XDC Apothem Testnet`
     default:
+      console.log('unknown network', networkID)
       return `Unknown Network`
   }
 }
