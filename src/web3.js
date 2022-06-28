@@ -236,41 +236,22 @@ export async function getNetworkId() {
   return network.chainId
 }
 
-export function getHelloWorld() {
-  console.log('Hello World')
-  return 'Hello World'
-}
-
 export async function getNetworkName() {
   try {
     const networkID = await getNetworkId()
     var networkName = ''
-    console.log(
-      '🚀 ~ file: web3.js ~ line 247 ~ getNetworkName ~ networkName',
-      networkName
-    )
-    console.log(
-      '🚀 ~ file: web3.js ~ line 246 ~ getNetworkName ~ networkID',
-      networkID
-    )
 
     switch (networkID) {
       case 50:
-        console.log('50 network', networkID)
         networkName = `XDC Mainnet`
         break
       case 51:
-        console.log('51 network', networkID)
         networkName = `XDC Apothem Testnet`
         break
       default:
-        console.log('unknown network', networkID)
-        networkName = `Unknown123 Network`
+        networkName = `Unknown Network`
     }
-    console.log(
-      '🚀 ~ file: web3.js ~ line 267 ~ getNetworkName ~ networkName',
-      networkName
-    )
+
     return networkName
   } catch (error) {
     console.error(
