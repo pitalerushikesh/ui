@@ -249,9 +249,8 @@ export async function getNetworkName() {
         networkName = `XDC Apothem Testnet`
         break
       default:
-        networkName = `Unknown Network`
+        networkName = `Unknown`
     }
-
     return networkName
   } catch (error) {
     console.error(
