@@ -513,7 +513,7 @@ export class ENS {
 
   async createSubdomain(name) {
     const account = await getAccount()
-    const publicResolverAddress = await this.getAddress('resolver.xdc')
+    const publicResolverAddress = await this.getAddress('xdc')
     try {
       return this.setSubnodeRecord(name, account, publicResolverAddress)
     } catch (e) {
