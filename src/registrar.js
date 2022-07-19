@@ -730,6 +730,10 @@ export async function setupRegistrar(registryAddress) {
   //   permanentRegistrarInterfaceId
   // )
   let controllerAddress = '0x40082685Fc430E901E12121717fe45dA75180973'
+  const networkId = await getNetworkId()
+  console.log('Check networkId', networkId)
+  console.log(typeOf, networkId)
+  console.log(typeOf(networkId))
   console.log('Controller address', controllerAddress)
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),

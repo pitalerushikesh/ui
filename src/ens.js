@@ -22,13 +22,14 @@ import {
   getSigner,
   getWeb3
 } from './web3'
+import networkContractMapping from './networkMapping.json'
 
 /* Utils */
 
 export function getNamehash(name) {
   return namehash(name)
 }
-
+console.log('Check import', networkContractMapping)
 async function getNamehashWithLabelHash(labelHash, nodeHash) {
   let node = utils.keccak256(nodeHash + labelHash.slice(2))
   return node.toString()
