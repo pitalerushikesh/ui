@@ -23,6 +23,7 @@ import {
   getProvider,
   getSigner
 } from './web3'
+import networkContractMapping from './networkMapping.json'
 
 const {
   legacyRegistrar: legacyRegistrarInterfaceId,
@@ -35,7 +36,6 @@ const {
 
 // Renewal seem failing as it's not correctly estimating gas to return when buffer exceeds the renewal cost
 const transferGasCost = 21000
-
 function checkArguments({
   registryAddress,
   ethAddress,
@@ -729,11 +729,10 @@ export async function setupRegistrar(registryAddress) {
   //   namehash('xdc'),
   //   permanentRegistrarInterfaceId
   // )
-  let controllerAddress = '0x40082685Fc430E901E12121717fe45dA75180973'
+  // let controllerAddress = '0x3F3BB75c8a11003F59eb68eC95d94fce0167487d'
   const networkId = await getNetworkId()
   console.log('Check networkId', networkId)
-  console.log(typeOf, networkId)
-  console.log(typeOf(networkId))
+  let controllerAddress = networkContractMapping[networkId]['controller']
   console.log('Controller address', controllerAddress)
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
