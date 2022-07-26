@@ -23,6 +23,7 @@ import {
   getProvider,
   getSigner
 } from './web3'
+import networkContractMapping from './networkMapping.json'
 
 const {
   legacyRegistrar: legacyRegistrarInterfaceId,
@@ -729,7 +730,10 @@ export async function setupRegistrar(registryAddress) {
   //   namehash('xdc'),
   //   permanentRegistrarInterfaceId
   // )
-  let controllerAddress = '0x3F3BB75c8a11003F59eb68eC95d94fce0167487d'
+  // let controllerAddress = '0x3F3BB75c8a11003F59eb68eC95d94fce0167487d'
+  const networkId = await getNetworkId()
+  console.log('Check networkId', networkId)
+  let controllerAddress = networkContractMapping[networkId]['controller']
   console.log('Controller address', controllerAddress)
   let legacyAuctionRegistrarAddress = await Resolver.interfaceImplementer(
     namehash('xdc'),
