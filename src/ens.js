@@ -52,10 +52,10 @@ const contracts = {
     registry: ''
   },
   50: {
-    registry: '0x370b5957d765b4318c0903c15aC60f0A7898c3bF'
+    registry: '0x3C69E80658eeDd01B0c023f5e65dDf8516B02BeF'
   },
   51: {
-    registry: '0x596F02DF7513aaEb8B707971FbA8c35A2F6381E8'
+    registry: '0xc5e1cBf8c3900F283a04E640cDA100aAa59666Ac'
   },
   1337: {
     registry: ''
@@ -513,7 +513,7 @@ export class ENS {
 
   async createSubdomain(name) {
     const account = await getAccount()
-    const publicResolverAddress = await this.getAddress('xdc')
+    const publicResolverAddress = await this.getAddress('go')
     try {
       return this.setSubnodeRecord(name, account, publicResolverAddress)
     } catch (e) {
