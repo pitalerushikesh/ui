@@ -1,26 +1,30 @@
-import { IFrameEthereumProvider } from '@ethvault/iframe-provider'
-import { ethers } from 'ethers'
+import { IFrameEthereumProvider } from "@ethvault/iframe-provider";
+import { ethers } from "ethers";
 
-let provider
-let signer
-let readOnly = false
-let requested = false
-let address
+let provider;
+let signer;
+let readOnly = false;
+let requested = false;
+let address;
 
 function getDefaultProvider() {
-  return new ethers.getDefaultProvider('homestead', 'any')
+  // return new ethers.getDefaultProvider("homestead", "any");
+  return new ethers.providers.Web3Provider(
+    "https://rpc.xinfin.yodaplus.net",
+    "any"
+  );
 }
 
 function getJsonRpcProvider(providerOrUrl) {
-  return new ethers.providers.JsonRpcProvider(providerOrUrl, 'any')
+  return new ethers.providers.JsonRpcProvider(providerOrUrl, "any");
 }
 
 function getWeb3Provider(providerOrUrl) {
-  return new ethers.providers.Web3Provider(providerOrUrl, 'any')
+  return new ethers.providers.Web3Provider(providerOrUrl, "any");
 }
 
 function getInfuraProvider(infura) {
-  return new ethers.providers.InfuraProvider('homestead', infura)
+  return new ethers.providers.InfuraProvider("homestead", infura);
 }
 
 export async function setupWeb3({
@@ -28,100 +32,104 @@ export async function setupWeb3({
   reloadOnAccountsChange = false,
   enforceReadOnly = false,
   enforceReload = false,
-  infura = false
+  infura = false,
 }) {
   if (enforceReload) {
-    provider = null
-    readOnly = false
-    address = null
+    provider = null;
+    readOnly = false;
+    address = null;
   }
 
   if (enforceReadOnly) {
-    readOnly = true
-    address = null
+    console.log("enforceReadOnly", enforceReadOnly);
+
+    readOnly = true;
+    address = null;
     if (infura) {
-      provider = getInfuraProvider(infura)
+      provider = getInfuraProvider(infura);
     } else {
-      provider = getDefaultProvider()
+      console.log("Using Default Provider");
+      provider = getDefaultProvider();
     }
-    return { provider, signer: undefined }
+    return { provider, signer: undefined };
   }
 
   if (provider) {
-    return { provider, signer }
+    return { provider, signer };
   }
   if (customProvider) {
-    if (typeof customProvider === 'string') {
+    console.log("customProvider", customProvider);
+    if (typeof customProvider === "string") {
       // handle raw RPC endpoint URL
-      provider = getJsonRpcProvider(customProvider)
-      signer = provider.getSigner()
+      provider = getJsonRpcProvider(customProvider);
+      signer = provider.getSigner();
     } else {
       // handle EIP 1193 provider
-      provider = getWeb3Provider(customProvider)
+      provider = getWeb3Provider(customProvider);
     }
-    return { provider, signer }
+    return { provider, signer };
   }
 
   // If the window is in an iframe, return the iframe provider IFF the iframe provider can be enabled
   if (window && window.parent && window.self && window.self !== window.parent) {
     try {
       const iframeProvider = new IFrameEthereumProvider({
-        targetOrigin: 'https://myethvault.com'
-      })
+        targetOrigin: "https://myethvault.com",
+      });
 
       await Promise.race([
         iframeProvider.enable(),
         // Race the enable with a promise that rejects after 1 second
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timed out after 1 second')), 1000)
-        )
-      ])
+          setTimeout(() => reject(new Error("Timed out after 1 second")), 1000)
+        ),
+      ]);
 
-      window.web3 = iframeProvider
-      window.ethereum = iframeProvider
+      window.web3 = iframeProvider;
+      window.ethereum = iframeProvider;
     } catch (error) {
-      console.error('Failed to create and enable iframe provider', error)
+      console.error("Failed to create and enable iframe provider", error);
     }
   }
 
   if (window && window.ethereum) {
-    provider = getWeb3Provider(window.ethereum)
-    signer = provider.getSigner()
+    provider = getWeb3Provider(window.ethereum);
+    signer = provider.getSigner();
     if (window.ethereum.on && reloadOnAccountsChange) {
-      address = await signer.getAddress()
-      window.ethereum.on('accountsChanged', async function (accounts) {
-        address = await signer.getAddress()
+      address = await signer.getAddress();
+      window.ethereum.on("accountsChanged", async function (accounts) {
+        address = await signer.getAddress();
         if (accounts[0] !== address) {
-          window.location.reload()
+          window.location.reload();
         }
-      })
+      });
     }
-    return { provider, signer }
+    return { provider, signer };
   } else if (window.web3 && window.web3.currentProvider) {
-    provider = getWeb3Provider(window.web3.currentProvider)
-    const id = (await provider.getNetwork()).chainId
-    signer = provider.getSigner()
-    return { provider, signer }
+    provider = getWeb3Provider(window.web3.currentProvider);
+    const id = (await provider.getNetwork()).chainId;
+    signer = provider.getSigner();
+    return { provider, signer };
   } else {
     try {
-      const url = 'http://localhost:8545'
-      await fetch(url)
-      console.log('local node active')
-      provider = getJsonRpcProvider(url)
+      const url = "http://localhost:8545";
+      await fetch(url);
+      console.log("local node active");
+      provider = getJsonRpcProvider(url);
     } catch (error) {
       if (
         error.readyState === 4 &&
         (error.status === 400 || error.status === 200)
       ) {
         // the endpoint is active
-        console.log('Success')
+        console.log("Success");
       } else {
         console.log(
-          'No web3 instance injected. Falling back to cloud provider.'
-        )
-        readOnly = true
-        provider = getDefaultProvider()
-        return { provider, signer }
+          "No web3 instance injected. Falling back to cloud provider."
+        );
+        readOnly = true;
+        provider = getDefaultProvider();
+        return { provider, signer };
       }
     }
   }
@@ -130,156 +138,156 @@ export async function setupWeb3({
 export async function getWeb3() {
   if (!provider) {
     throw new Error(
-      'Ethers has not been instantiated, please call setupWeb3() first'
-    )
+      "Ethers has not been instantiated, please call setupWeb3() first"
+    );
   }
-  return provider
+  return provider;
 }
 
 export async function getWeb3Read() {
   if (!provider) {
     throw new Error(
-      'Ethers has not been instantiated, please call setupWeb3() first'
-    )
+      "Ethers has not been instantiated, please call setupWeb3() first"
+    );
   }
-  return provider
+  return provider;
 }
 
 export function isReadOnly() {
-  return readOnly
+  return readOnly;
 }
 
 export function getNetworkProviderUrl(id) {
   switch (id) {
-    case '1':
-      return `https://mainnet.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
-    case '3':
-      return `https://ropsten.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
-    case '4':
-      return `https://rinkeby.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
-    case '5':
-      return `https://goerli.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
-    case '50':
-      return `https://rpc.xinfin.yodaplus.net`
-    case '51':
-      return `https://rpc-apothem.xinfin.yodaplus.net`
-    case '1337':
-      return `http://127.0.0.1:8545`
+    case "1":
+      return `https://mainnet.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "3":
+      return `https://ropsten.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "4":
+      return `https://rinkeby.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "5":
+      return `https://goerli.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "50":
+      return `https://rpc.xinfin.yodaplus.net`;
+    case "51":
+      return `https://rpc-apothem.xinfin.yodaplus.net`;
+    case "1337":
+      return `http://127.0.0.1:8545`;
     default:
-      return `https://rpc-apothem.xinfin.yodaplus.net`
+      return `https://rpc-apothem.xinfin.yodaplus.net`;
   }
 }
 
 export async function getProvider() {
-  return getWeb3()
+  return getWeb3();
 }
 
 export async function getSigner() {
-  const provider = await getWeb3()
+  const provider = await getWeb3();
   try {
-    const signer = provider.getSigner()
-    await signer.getAddress()
-    return signer
+    const signer = provider.getSigner();
+    await signer.getAddress();
+    return signer;
   } catch (e) {
     if (window.ethereum) {
       try {
-        if (requested === true) return provider
-        await window.ethereum.enable()
-        const signer = await provider.getSigner()
-        await signer.getAddress()
-        return signer
+        if (requested === true) return provider;
+        await window.ethereum.enable();
+        const signer = await provider.getSigner();
+        await signer.getAddress();
+        return signer;
       } catch (e) {
-        requested = true
-        return provider
+        requested = true;
+        return provider;
       }
     } else {
-      return provider
+      return provider;
     }
   }
 }
 
 export async function getAccount() {
-  const provider = await getWeb3()
+  const provider = await getWeb3();
   try {
-    const signer = await provider.getSigner()
-    const address = await signer.getAddress()
-    return address
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    return address;
   } catch (e) {
-    return '0x0'
+    return "0x0";
   }
 }
 
 export async function getAccounts() {
   try {
-    const account = await getAccount()
+    const account = await getAccount();
     if (parseInt(account, 16) !== 0) {
-      return [account]
+      return [account];
     } else if (window.ethereum) {
       try {
-        const accounts = await window.ethereum.enable()
-        return accounts
+        const accounts = await window.ethereum.enable();
+        return accounts;
       } catch (error) {
-        console.warn('Did not allow app to access dapp browser')
-        throw error
+        console.warn("Did not allow app to access dapp browser");
+        throw error;
       }
     } else {
-      return []
+      return [];
     }
   } catch (e) {
-    return []
+    return [];
   }
 }
 
 export async function getNetworkId() {
-  const provider = await getWeb3()
-  const network = await provider.getNetwork()
-  return network.chainId
+  const provider = await getWeb3();
+  const network = await provider.getNetwork();
+  return network.chainId;
 }
 
 export async function getNetworkName() {
   try {
-    const networkID = await getNetworkId()
-    var networkName = ''
+    const networkID = await getNetworkId();
+    var networkName = "";
 
     switch (networkID) {
       case 50:
-        networkName = `XDC Mainnet`
-        break
+        networkName = `XDC Mainnet`;
+        break;
       case 51:
-        networkName = `XDC Apothem Testnet`
-        break
+        networkName = `XDC Apothem Testnet`;
+        break;
       default:
-        networkName = `Unknown`
+        networkName = `Unknown`;
     }
-    return networkName
+    return networkName;
   } catch (error) {
     console.error(
-      '🚀 ~ file: web3.js ~ line 275 ~ getNetworkName ~ error',
+      "🚀 ~ file: web3.js ~ line 275 ~ getNetworkName ~ error",
       error
-    )
+    );
   }
 }
 
 export async function getNetwork() {
-  const provider = await getWeb3()
-  const network = await provider.getNetwork()
-  console.log('🚀 ~ file: web3.js ~ line 259 ~ getNetwork ~ network', network)
-  return network
+  const provider = await getWeb3();
+  const network = await provider.getNetwork();
+  console.log("🚀 ~ file: web3.js ~ line 259 ~ getNetwork ~ network", network);
+  return network;
 }
 
-export async function getBlock(number = 'latest') {
+export async function getBlock(number = "latest") {
   try {
-    const provider = await getWeb3()
-    const blockDetails = await provider.getBlock(number)
+    const provider = await getWeb3();
+    const blockDetails = await provider.getBlock(number);
     return {
       number: blockDetails.number,
-      timestamp: blockDetails.timestamp
-    }
+      timestamp: blockDetails.timestamp,
+    };
   } catch (e) {
-    console.log('error getting block details', e)
+    console.log("error getting block details", e);
     return {
       number: 0,
-      timestamp: 0
-    }
+      timestamp: 0,
+    };
   }
 }
