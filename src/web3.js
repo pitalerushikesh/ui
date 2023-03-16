@@ -7,12 +7,20 @@ let readOnly = false;
 let requested = false;
 let address;
 
-function getJsonRpcProvider(providerOrUrl, option = "any") {
-  return new ethers.providers.JsonRpcProvider(providerOrUrl, option);
+function getDefaultProvider() {
+  return new ethers.getDefaultProvider("homestead", "any");
 }
 
-function getWeb3Provider(providerOrUrl, option = "any") {
-  return new ethers.providers.Web3Provider(providerOrUrl, option);
+function getJsonRpcProvider(providerOrUrl) {
+  return new ethers.providers.JsonRpcProvider(providerOrUrl, "any");
+}
+
+function getWeb3Provider(providerOrUrl) {
+  return new ethers.providers.Web3Provider(providerOrUrl, "any");
+}
+
+function getInfuraProvider(infura) {
+  return new ethers.providers.InfuraProvider("homestead", infura);
 }
 
 export async function setupWeb3({
@@ -20,12 +28,8 @@ export async function setupWeb3({
   reloadOnAccountsChange = false,
   enforceReadOnly = false,
   enforceReload = false,
-  ensAddress,
+  infura = false,
 }) {
-  if (!customProvider) {
-    throw new Error("Provider required to setup web3");
-  }
-
   if (enforceReload) {
     provider = null;
     readOnly = false;
@@ -35,26 +39,21 @@ export async function setupWeb3({
   if (enforceReadOnly) {
     readOnly = true;
     address = null;
-    provider = getJsonRpcProvider(customProvider);
+    if (infura) {
+      provider = getInfuraProvider(infura);
+    } else {
+      provider = getDefaultProvider();
+    }
     return { provider, signer: undefined };
   }
 
   if (provider) {
     return { provider, signer };
   }
-
   if (customProvider) {
     if (typeof customProvider === "string") {
       // handle raw RPC endpoint URL
-      if (customProvider.match(/localhost/) && ensAddress) {
-        provider = getJsonRpcProvider(customProvider, {
-          chainId: 1337,
-          name: "unknown",
-          ensAddress,
-        });
-      } else {
-        provider = getJsonRpcProvider(customProvider);
-      }
+      provider = getJsonRpcProvider(customProvider);
       signer = provider.getSigner();
     } else {
       // handle EIP 1193 provider
@@ -117,9 +116,12 @@ export async function setupWeb3({
         // the endpoint is active
         console.log("Success");
       } else {
-        throw new Error(
+        console.log(
           "No web3 instance injected. Falling back to cloud provider."
         );
+        readOnly = true;
+        provider = getDefaultProvider();
+        return { provider, signer };
       }
     }
   }
@@ -145,6 +147,25 @@ export async function getWeb3Read() {
 
 export function isReadOnly() {
   return readOnly;
+}
+
+export function getNetworkProviderUrl(id) {
+  switch (id) {
+    case "1":
+      return `https://mainnet.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "3":
+      return `https://ropsten.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "4":
+      return `https://rinkeby.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "5":
+      return `https://goerli.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
+    case "50":
+      return `https://rpc.xinfin.yodaplus.net`;
+    case "51":
+      return `https://rpc-apothem.xinfin.yodaplus.net`;
+    default:
+      return `https://rpc.xinfin.yodaplus.net`;
+  }
 }
 
 export async function getProvider() {
