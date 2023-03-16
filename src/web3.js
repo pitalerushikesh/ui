@@ -133,6 +133,7 @@ export async function getWeb3() {
       "Ethers has not been instantiated, please call setupWeb3() first"
     );
   }
+  console.log("PROVIDER - UI", provider);
   return provider;
 }
 
