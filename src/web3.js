@@ -152,14 +152,6 @@ export function isReadOnly() {
 
 export function getNetworkProviderUrl(id) {
   switch (id) {
-    case "1":
-      return `https://mainnet.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
-    case "3":
-      return `https://ropsten.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
-    case "4":
-      return `https://rinkeby.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
-    case "5":
-      return `https://goerli.infura.io/v3/90f210707d3c450f847659dc9a3436ea`;
     case "50":
       return `https://rpc.xinfin.yodaplus.net`;
     case "51":
