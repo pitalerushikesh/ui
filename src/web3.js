@@ -24,7 +24,10 @@ function getWeb3Provider(providerOrUrl) {
 }
 
 function getInfuraProvider(infura) {
-  return new ethers.providers.InfuraProvider("homestead", infura);
+  return new ethers.providers.JsonRpcProvider(
+    "https://rpc.xinfin.yodaplus.net",
+    "any"
+  );
 }
 
 export async function setupWeb3({
