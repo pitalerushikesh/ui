@@ -8,7 +8,11 @@ let requested = false;
 let address;
 
 function getDefaultProvider() {
-  return new ethers.getDefaultProvider("homestead", "any");
+  // return new ethers.getDefaultProvider("homestead", "any");
+  return new ethers.providers.JsonRpcProvider(
+    "https://rpc.xinfin.yodaplus.net",
+    "any"
+  );
 }
 
 function getJsonRpcProvider(providerOrUrl) {
